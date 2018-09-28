@@ -18,7 +18,7 @@ public class ReaperApp {
     private  final String path = "/home/christian/Scrivania/corsoJAVANew";
     private final static String url = "http://www.html.it/pag/15096/introduzione-a-java/";
     private final static String pageUrl = "http://www.html.it/guide/guida-java/";
-    private final static boolean pageOnly = false;
+    private final static boolean pageOnly = true;
 	
 	/*private  final String path = "/home/christian/Scrivania/corsoAngularTP";
     private final static String url = "https://www.tutorialspoint.com/angular4/index.htm";
@@ -32,10 +32,16 @@ public class ReaperApp {
     	
     	injector = Guice.createInjector(new HtmlITModule());
 
-        Reaper first = injector.getInstance(Reaper.class);
-        first.init(url);
+        
 
         ReaperApp app = new ReaperApp(1);
+        
+       
+        Reaper first = injector.getInstance(Reaper.class);
+        if(!pageOnly) {
+        	first.init(url);
+        }
+        
 
         app.doNext(first);
 
@@ -74,7 +80,7 @@ public class ReaperApp {
             }
             
             else {
-            	 paginate();
+            	 //paginate();
             }
     	}
         

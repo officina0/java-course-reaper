@@ -17,9 +17,12 @@ public class HtmlItJava implements  Reaper {
 	public void init(String url) {
 		try {
 			Document doc = Jsoup.connect(url).get();
-			Element article = doc.body().getElementById("content-article");
+			//Element article = doc.body().getElementById("content-article");
+			System.out.println(String.format("Working on: %s", url));
 			this.title = doc.title();
-			this.articleBody = article.getElementsByClass("content-text").get(0);
+			this.articleBody = doc.body().getElementsByClass("editorial").get(0);
+			this.articleBody.getElementsByClass("newsletter-container").remove();
+			this.articleBody.getElementsByTag("script").remove();
 			this.next = getNext(doc);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -36,14 +39,11 @@ public class HtmlItJava implements  Reaper {
 	}*/
 	
 	private String getNext(Document doc) {
-		Elements nexts = doc.body().getElementsByClass("next");
-		if (nexts.size() > 0) {
-			Element next = nexts.first();
-			Elements as = next.getElementsByClass("btn");
-			if (as.size() > 0) {
-				Element a = as.first();
-				return a.attr("href");
-			}
+		Elements nexts = doc.body().getElementsByClass("lesson-pagination__next");
+		
+		if (nexts != null && nexts.attr("href") != null) {
+			String ref = nexts.attr("href");
+			return ref.isEmpty() ? null : ref;
 		}
 		return null;
 	}

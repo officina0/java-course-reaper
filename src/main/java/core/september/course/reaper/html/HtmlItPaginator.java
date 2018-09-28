@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
@@ -34,22 +35,29 @@ public class HtmlItPaginator implements Paginator {
 	
 	@Override
 	public void page() {
-		Elements pages = doc.body().getElementsByClass("guide-title");
+		Elements pages = doc.body().getElementsByClass("guide-index__chapter");
 		handlePages(pages);
 	}
 
 	private void handlePages(Elements pages) {
-		int counter = 0;
+		//int counter = 0;
+		final AtomicInteger counter = new AtomicInteger(0);
 		for (Element page : pages) {
-			List<Element> ols = Arrays.asList(page.siblingElements()
-					.toArray(new Element[page.siblingElements().size()])).stream()
-			.filter(e -> e.tag().getName().equals("ol"))
-			.collect(Collectors.toList());
-			Element li = ols.get(counter);
-			System.out.println(page.getElementsByTag("h2").get(0).html());
-			System.out.println(li.getElementsByTag("li").size());
-			counter ++;
-			pageWrite(page.getElementsByTag("h2").get(0).html(),li.getElementsByTag("li").size(),counter);
+			
+			Element ol = page.getElementsByTag("ol").get(0);
+			Element mainTitle = page.getElementsByTag("span").first();
+			Elements li = ol.getElementsByTag("li");
+			
+			pageWrite(mainTitle.html(),li.size(),counter.incrementAndGet());
+			
+			/*li.stream().forEach(eLi -> {
+				Element title = eLi.getElementsByTag("h3").first();
+				title.getElementsByTag("span").remove();
+				//System.out.println(page.getElementsByTag("h3").get(0).html());
+				//System.out.println(li.getElementsByTag("li").size());
+				pageWrite(mainTitle.html(),1,counter.incrementAndGet());
+			});*/
+
 			
 		}
 		
